@@ -29,6 +29,33 @@ def get_sudoku():
       where int values 1,2,3,4,5,6,7,8,9 are filled values in the sudoku
       and a set(1,2,3,4,5,6,7,8,9) is inserted in place of any missing missing value in the sudoku.
     """
+    print("Please input a sudoku as a string (no spaces) of 81 characters\n")
+    print("Numbers 1,2,3,4,5,6,7,8,9 are the filled values and other symbols are missing values")
+    input_sudoku = input("Sudoku: \n")
+
+    print(len(input_sudoku))
+
+    # Later delete
+    input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
+
+    if len(input_sudoku) == 81:
+        print("print_sudoku(input_sudoku)")
+    else:
+        print("\n\nInput is not a string of 81 charachters!")
+        print("Try again...\n")
+        get_sudoku()
+
+    sudoku = []
+    for s in input_sudoku:
+        if s in {'1', '2', '3', '4', '5', '6', '7', '8', '9'}:
+            sudoku.append(int(s))
+        else:
+            sudoku.append({1, 2, 3, 4, 5, 6, 7, 8, 9})
+
+    #for s in sudoku:
+        #print(s)
+
+    return sudoku
 
 def is_input_valid(sudoku):
     """
@@ -98,3 +125,6 @@ def handle_user():
     """
     Handle interactions with the user and call functions to solve the sudoku.
     """
+    sudoku = get_sudoku()
+
+handle_user()
