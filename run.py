@@ -39,7 +39,7 @@ def get_sudoku():
     input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
 
     if len(input_sudoku) == 81:
-        print("print_sudoku(input_sudoku)")
+        print_sudoku(input_sudoku)
     else:
         print("\n\nInput is not a string of 81 charachters!")
         print("Try again...\n")
@@ -73,6 +73,24 @@ def print_sudoku(sudoku):
       and missing values are 'X'.
     Returns None.
     """
+
+    """
+    Reference for using enumerate():
+    https://stackoverflow.com/questions/522563/accessing-the-index-in-for-loops
+    Reference for printing without newline:
+    https://stackoverflow.com/questions/493386/how-to-print-without-a-newline-or-space
+    """
+    for i, value in enumerate(sudoku):
+        if ((i+1) % 27) == 0:
+            print(value, '\n')
+        elif ((i+1) % 9) == 0:
+            print(value, end='\n')
+        elif ((i+1) % 3) == 0:
+            print(value, end='   ')
+        else:
+            print(value, end=' ')
+    
+    print('\n')
 
 def clear_filled(sudoku):
     """
