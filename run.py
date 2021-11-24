@@ -89,7 +89,11 @@ def display_unfilled_cell(cell_content):
     Gets cell content
     Returns cell content if filled or - if unfilled
     """
-    if cell_content in {'1', '2', '3', '4', '5', '6', '7', '8', '9'}:
+    cell_content = str(cell_content)
+    if len(cell_content) == 1 and cell_content in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:# or range(1, 9):
+        return cell_content
+    elif len(cell_content) == 2:
+        # len is 2 only when a sudoku code XX map is generated
         return cell_content
     else:
         return '-'
@@ -110,7 +114,6 @@ def print_sudoku(sudoku):
     Reference for printing without newline:
     https://stackoverflow.com/questions/493386/how-to-print-without-a-newline-or-space
     """
-    print("This is your sudoku: ")
     for i, value in enumerate(sudoku):
         value = display_unfilled_cell(sudoku[i])
         if ((i+1) % 27) == 0:
@@ -178,32 +181,39 @@ def replace_cell(sudoku):
         else:
             locations.append(str(ind))
 
+    print("This is the code (XX) map for the sudoku: \n")
     print_sudoku(locations)
 
-    """Change location to input"""
+    """Replace value of location with input"""
+    made_changes = True
 
     input_cell_code = input('Please enter the XX code to the cell you want to change the value for: ')
 
     if input_cell_code in locations:
         cell_index = locations.index(input_cell_code)
-        print(cell_index)
+        old_value = sudoku[cell_index]
+        print(f"Current {input_cell_code} value is: {old_value}")
         input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
         while len(input_new_cell_value) > 1:
-            print("The value must be a nuber between 1 and 9 for filled cell or any one other character for unfilled cell!")
+            print("The value must be a number between 1 and 9 for filled cell or any one other character for unfilled cell!")
             print("Please try again!\n")
             
             input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
 
-        old_value = sudoku[cell_index]
         sudoku[cell_index] = input_new_cell_value
-        print(f'{old_value} -> {sudoku[cell_index]}')
+        if str(old_value) == str(sudoku[cell_index]):
+            print(f"You entered the same value: {old_value}")
+            made_changes = False
+        else: 
+            print(f'{old_value} -> {sudoku[cell_index]}')
 
+        print("Your sudoku currently: \n")
         print_sudoku(sudoku)
 
     else:
         replace_cell(sudoku)
 
-    return locations
+    return [sudoku, made_changes]
 
 def handle_unsolvable(sudoku):
     """
@@ -218,16 +228,36 @@ def handle_user():
     """
     print("Hello friend!")
     print("This is your Sudoku Solver!")
-    sudoku = get_sudoku()
+    #to keep record of the input sudoku
+    sudoku_at_the_start = get_sudoku()
+
+    sudoku = sudoku_at_the_start
 
     print("Do you want to make any changes to it?")
-    to_continue = input("Enter: \n'y' (Yes), \nany key besides 'y' and 'q' (No. Let's continue!), \n'q' (Quit)")
-
-    #replace_grid = replace_cell(sudoku)
+    print("\n\n(Yes) press 'y' !\n(No. Let's continue!) press any key besides 'y' and 'q' ! \n(Quit) press'q' !\n")
+    to_change_smth = input("Make changes: ")
+    if to_change_smth.lower() == 'y':
+        while to_change_smth.lower() == 'y':
+            replace_grid = replace_cell(sudoku)
+            to_change_smth = input("To make more changes press 'y': ")
+    elif to_change_smth.lower() == 'q':
+        print("Goodbye!")
+        quit()
 
     print("Do you want this program to try to solve it?")
-    to_solve = input("Enter: \nany key besides 'n' and 'q'  (Yes), \n'n' (No), \n'q' (Quit)")
+    print("\n(Yes) press any key besides 'n' and 'q' ! \n(No) press 'n' ! \n(Quit) press 'q' !")
+    to_solve = input('Solve sudoku: ')
+    if to_solve.lower() == 'n':
+        print("Ok. Not solving sudoku!")
+        # hint the cell instead?
+        print("Goodbye!")
+        quit()
+    elif to_solve.lower() == 'q':
+        print("Goodbye!")
+        quit()
     made_changes = True
+
+    #for 'unsolved after solving' sudoku ofer to make a change to cells again
 
     print(sudoku)
 
