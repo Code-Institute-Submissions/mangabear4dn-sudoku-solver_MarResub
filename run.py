@@ -141,6 +141,48 @@ def is_solved(sudoku):
     Returns a boolean
     """
 
+def replace_cell(sudoku):
+    """
+    Replace the content of one cell.
+    Gets list(81)
+    Returns list(81) and a boolean made_changes
+    """
+
+    """Create locations map"""
+    locations = []
+    for ind in range(81):
+        if ind < 10:
+            locations.append('0' + str(ind))
+        else:
+            locations.append(str(ind))
+
+    print_sudoku(locations)
+
+    """Change location to input"""
+
+    input_cell_code = input('Please enter the XX code to the cell you want to change the value for: ')
+
+    if input_cell_code in locations:
+        cell_index = locations.index(input_cell_code)
+        print(cell_index)
+        input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
+        while len(input_new_cell_value) > 1:
+            print("The value must be a nuber between 1 and 9 for filled cell or any one other character for unfilled cell!")
+            print("Please try again!\n")
+            
+            input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
+
+        old_value = sudoku[cell_index]
+        sudoku[cell_index] = input_new_cell_value
+        print(f'{old_value} -> {sudoku[cell_index]}')
+
+        print_sudoku(sudoku)
+
+    else:
+        replace_cell(sudoku)
+
+    return locations
+
 def handle_unsolvable(sudoku):
     """
     Handle a sudoku the program cannot finish solving.
@@ -153,5 +195,7 @@ def handle_user():
     Handle interactions with the user and call functions to solve the sudoku.
     """
     sudoku = get_sudoku()
+
+    replace_grid = replace_cell(sudoku)
 
 handle_user()
