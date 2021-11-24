@@ -24,13 +24,25 @@ For a sudoku 9x9 each filled value must be unique in it's row, column and quadra
 To make checking uniqueness easier the following 3 tuples of indeces in the same row, column and quadrant 
 will be used in iterations.
 """
-rows = (0, 1, 2, 3, 4, 5, 6, 7, 8), (9, 10, 11, 12, 13, 14, 15, 16, 17), (18, 19, 20, 21, 22, 23, 24, 25, 26), (27, 28, 29, 30, 31, 32, 33, 34, 35), (36, 37, 38, 39, 40, 41, 42, 43, 44), (45, 46, 47, 48, 49, 50, 51, 52, 53), (54, 55, 56, 57, 58, 59, 60, 61, 62), (63, 64, 65, 66, 67, 68, 69, 70, 71), (72, 73, 74, 75, 76, 77, 78, 79, 80)
-cols = (0, 9, 18, 27, 36, 45, 54, 63, 72), (1, 10, 19, 28, 37, 46, 55, 64, 73), (2, 11, 20, 29, 38, 47, 56, 65, 74), (3, 12, 21, 30, 39, 48, 57, 66, 75), (4, 13, 22, 31, 40, 49, 58, 67, 76), (5, 14, 23, 32, 41, 50, 59, 68, 77), (6, 15, 24, 33, 42, 51, 60, 69, 78), (7, 16, 25, 34, 43, 52, 61, 70, 79), (8, 17, 26, 35, 44, 53, 62, 71, 80)
-quads = (0, 1, 2, 9, 10, 11, 18, 19, 20), (3, 4, 5, 12, 13, 14, 21, 22, 23), (6, 7, 8, 15, 16, 17, 24, 25, 26), (27, 28, 29, 36, 37, 38, 45, 46, 47), (30, 31, 32, 39, 40, 41, 48, 49, 50), (33, 34, 35, 42, 43, 44, 51, 52, 53), (54, 55, 56, 63, 64, 65, 72, 73, 74), (57, 58, 59, 66, 67, 68, 75, 76, 77), (60, 61, 62, 69, 70, 71, 78, 79, 80)
+rows = ((0, 1, 2, 3, 4, 5, 6, 7, 8), (9, 10, 11, 12, 13, 14, 15, 16, 17), 
+        (18, 19, 20, 21, 22, 23, 24, 25, 26), (27, 28, 29, 30, 31, 32, 33, 34, 35), 
+        (36, 37, 38, 39, 40, 41, 42, 43, 44), (45, 46, 47, 48, 49, 50, 51, 52, 53), 
+        (54, 55, 56, 57, 58, 59, 60, 61, 62), (63, 64, 65, 66, 67, 68, 69, 70, 71), 
+        (72, 73, 74, 75, 76, 77, 78, 79, 80))
+cols = ((0, 9, 18, 27, 36, 45, 54, 63, 72), (1, 10, 19, 28, 37, 46, 55, 64, 73), 
+        (2, 11, 20, 29, 38, 47, 56, 65, 74), (3, 12, 21, 30, 39, 48, 57, 66, 75), 
+        (4, 13, 22, 31, 40, 49, 58, 67, 76), (5, 14, 23, 32, 41, 50, 59, 68, 77), 
+        (6, 15, 24, 33, 42, 51, 60, 69, 78), (7, 16, 25, 34, 43, 52, 61, 70, 79), 
+        (8, 17, 26, 35, 44, 53, 62, 71, 80))
+quads = ((0, 1, 2, 9, 10, 11, 18, 19, 20), (3, 4, 5, 12, 13, 14, 21, 22, 23), 
+         (6, 7, 8, 15, 16, 17, 24, 25, 26), (27, 28, 29, 36, 37, 38, 45, 46, 47), 
+         (30, 31, 32, 39, 40, 41, 48, 49, 50), (33, 34, 35, 42, 43, 44, 51, 52, 53), 
+         (54, 55, 56, 63, 64, 65, 72, 73, 74), (57, 58, 59, 66, 67, 68, 75, 76, 77), 
+         (60, 61, 62, 69, 70, 71, 78, 79, 80))
 
 def get_sudoku():
     """
-    Get unfinished sudoku input from user.
+    Get unfinished sudoku input from user and make changes necessary for the solving of it.
     Input should be a string of 81 char 
       where 1,2,3,4,5,6,7,8,9 are filled values in the sudoku
       and any other char is a missing value in the sudoku.
@@ -38,14 +50,15 @@ def get_sudoku():
       where int values 1,2,3,4,5,6,7,8,9 are filled values in the sudoku
       and a set(1,2,3,4,5,6,7,8,9) is inserted in place of any missing missing value in the sudoku.
     """
-    print("Please input a sudoku as a string (no spaces) of 81 characters\n")
-    print("Numbers 1,2,3,4,5,6,7,8,9 are the filled values and other symbols are missing values")
+    print("Please input a sudoku as a string (no spaces) of 81 characters!\n")
+    print("Numbers 1,2,3,4,5,6,7,8,9 are the filled values and any other symbols are missing values.")
     input_sudoku = input("Sudoku: \n")
 
-    print(len(input_sudoku))
-
     # Later delete
-    input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
+    # random/error in sudoku
+    # input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
+    # solvable
+    input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
 
     if len(input_sudoku) == 81:
         print_sudoku(input_sudoku)
@@ -60,9 +73,6 @@ def get_sudoku():
             sudoku.append(int(s))
         else:
             sudoku.append({1, 2, 3, 4, 5, 6, 7, 8, 9})
-
-    #for s in sudoku:
-        #print(s)
 
     return sudoku
 
@@ -100,6 +110,7 @@ def print_sudoku(sudoku):
     Reference for printing without newline:
     https://stackoverflow.com/questions/493386/how-to-print-without-a-newline-or-space
     """
+    print("This is your sudoku: ")
     for i, value in enumerate(sudoku):
         value = display_unfilled_cell(sudoku[i])
         if ((i+1) % 27) == 0:
@@ -109,8 +120,7 @@ def print_sudoku(sudoku):
         elif ((i+1) % 3) == 0:
             print(value, end='   ')
         else:
-            print(value, end=' ')
-    
+            print(value, end=' ') 
     print('\n')
 
 def clear_filled(sudoku):
@@ -206,9 +216,18 @@ def handle_user():
     """
     Handle interactions with the user and call functions to solve the sudoku.
     """
+    print("Hello friend!")
+    print("This is your Sudoku Solver!")
     sudoku = get_sudoku()
 
+    print("Do you want to make any changes to it?")
+    to_continue = input("Enter: \n'y' (Yes), \nany key besides 'y' and 'q' (No. Let's continue!), \n'q' (Quit)")
+
     #replace_grid = replace_cell(sudoku)
+
+    print("Do you want this program to try to solve it?")
+    to_solve = input("Enter: \nany key besides 'n' and 'q'  (Yes), \n'n' (No), \n'q' (Quit)")
+    made_changes = True
 
     print(sudoku)
 
