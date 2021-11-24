@@ -228,10 +228,7 @@ def handle_user():
     """
     print("Hello friend!")
     print("This is your Sudoku Solver!")
-    #to keep record of the input sudoku
-    sudoku_at_the_start = get_sudoku()
-
-    sudoku = sudoku_at_the_start
+    sudoku = get_sudoku()
 
     print("Do you want to make any changes to it?")
     print("\n\n(Yes) press 'y' !\n(No. Let's continue!) press any key besides 'y' and 'q' ! \n(Quit) press'q' !\n")
@@ -243,6 +240,9 @@ def handle_user():
     elif to_change_smth.lower() == 'q':
         print("Goodbye!")
         quit()
+
+    # to keep record of the input sudoku
+    sudoku_at_the_start = sudoku
 
     print("Do you want this program to try to solve it?")
     print("\n(Yes) press any key besides 'n' and 'q' ! \n(No) press 'n' ! \n(Quit) press 'q' !")
