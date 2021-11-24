@@ -73,13 +73,24 @@ def is_input_valid(sudoku):
     Returns a boolean
     """
 
+def display_unfilled_cell(cell_content):
+    """
+    Display unfilled cell as -
+    Gets cell content
+    Returns cell content if filled or - if unfilled
+    """
+    if cell_content in {'1', '2', '3', '4', '5', '6', '7', '8', '9'}:
+        return cell_content
+    else:
+        return '-'
+
 def print_sudoku(sudoku):
     """
     Print the sudoku that is given to the function.
     Gets list(81)
     Values are printed as 9 x 9
       where filled values are numbers
-      and missing values are 'X'.
+      and missing values are '-'.
     Returns None.
     """
 
@@ -90,6 +101,7 @@ def print_sudoku(sudoku):
     https://stackoverflow.com/questions/493386/how-to-print-without-a-newline-or-space
     """
     for i, value in enumerate(sudoku):
+        value = display_unfilled_cell(sudoku[i])
         if ((i+1) % 27) == 0:
             print(value, '\n')
         elif ((i+1) % 9) == 0:
@@ -196,6 +208,8 @@ def handle_user():
     """
     sudoku = get_sudoku()
 
-    replace_grid = replace_cell(sudoku)
+    #replace_grid = replace_cell(sudoku)
+
+    print(sudoku)
 
 handle_user()
