@@ -39,6 +39,7 @@ quads = ((0, 1, 2, 9, 10, 11, 18, 19, 20), (3, 4, 5, 12, 13, 14, 21, 22, 23),
          (30, 31, 32, 39, 40, 41, 48, 49, 50), (33, 34, 35, 42, 43, 44, 51, 52, 53), 
          (54, 55, 56, 63, 64, 65, 72, 73, 74), (57, 58, 59, 66, 67, 68, 75, 76, 77), 
          (60, 61, 62, 69, 70, 71, 78, 79, 80))
+relatives = (rows, cols, quads)
 
 def get_sudoku():
     """
@@ -90,7 +91,7 @@ def display_unfilled_cell(cell_content):
     Returns cell content if filled or - if unfilled
     """
     cell_content = str(cell_content)
-    if len(cell_content) == 1 and cell_content in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:# or range(1, 9):
+    if len(cell_content) == 1 and cell_content in ['1', '2', '3', '4', '5', '6', '7', '8', '9']:
         return cell_content
     elif len(cell_content) == 2:
         # len is 2 only when a sudoku code XX map is generated
@@ -133,6 +134,26 @@ def clear_filled(sudoku):
     Gets list(81)
     Returns list(81) and a boolean made_changes
     """
+
+    made_changes = False
+    ind = 0
+    for value in sudoku:
+        filled_values = set()
+        
+        if value not in range(1, 10):
+            for rels in relatives: # rows, cols, quads
+                for relative_field in rels: # like each row in rows
+                    if ind in relative_field: # if the index is in the row
+                        for rel_ind in relative_field: # for each value in row
+                            if sudoku[rel_ind] in range(1, 10): # if it is filled
+                                filled_values.add(sudoku[rel_ind])
+        
+            if value != filled_values:
+                value.difference_update(filled_values)
+                print(ind, value)
+                made_changes = True
+        ind += 1
+    return [sudoku, made_changes]
 
 def fill_last_value(sudoku):
     """
@@ -256,9 +277,11 @@ def handle_user():
         print("Goodbye!")
         quit()
     made_changes = True
+    sudoku, made_changes = clear_filled(sudoku)
+    print(made_changes)
 
     #for 'unsolved after solving' sudoku ofer to make a change to cells again
 
-    print(sudoku)
+    print_sudoku(sudoku)
 
 handle_user()
