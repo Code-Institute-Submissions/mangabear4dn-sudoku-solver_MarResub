@@ -138,19 +138,12 @@ def clear_filled(sudoku):
     made_changes = False
     ind = 0
     for value in sudoku:
-        filled_values = set()
-        
         if value not in range(1, 10):
-            for rels in relatives: # rows, cols, quads
-                for relative_field in rels: # like each row in rows
-                    if ind in relative_field: # if the index is in the row
-                        for rel_ind in relative_field: # for each value in row
-                            if sudoku[rel_ind] in range(1, 10): # if it is filled
-                                filled_values.add(sudoku[rel_ind])
+            filled_values = {sudoku[rel_ind] for rels in relatives for relative_field in rels if ind in relative_field for rel_ind in relative_field if sudoku[rel_ind] in range(1, 10)}
         
             if value != filled_values:
                 value.difference_update(filled_values)
-                print(ind, value)
+                # print(ind, value)
                 made_changes = True
         ind += 1
     return [sudoku, made_changes]
