@@ -140,7 +140,8 @@ def clear_filled(sudoku):
     for value in sudoku:
         if value not in range(1, 10):
             
-            # filled_values = {sudoku[rel_ind] for rels in relatives for relative_field in rels if ind in relative_field for rel_ind in relative_field if sudoku[rel_ind] in range(1, 10)}
+            filled_values = {sudoku[rel_ind] for rels in relatives for relative_field in rels if ind in relative_field for rel_ind in relative_field if sudoku[rel_ind] in range(1, 10)}
+            """
             filled_values = set()
             for rels in relatives: # rows, cols, quads
                 for relative_field in rels: # like each row in rows
@@ -148,13 +149,13 @@ def clear_filled(sudoku):
                         for rel_ind in relative_field: # for each value in row
                             if sudoku[rel_ind] in range(1, 10): # if it is filled
                                 filled_values.add(sudoku[rel_ind])
-            
+            """
             if value != filled_values:
                 value.difference_update(filled_values)
                 # print(ind, value)
                 made_changes = True
         ind += 1
-    return [sudoku, made_changes]
+    return sudoku, made_changes
 
 def fill_last_value(sudoku):
     """
@@ -181,6 +182,34 @@ def fill_unique_value(sudoku):
     Gets list(81)
     Returns list(81) and a boolean made_changes
     """
+    made_changes = False
+    ind = 0
+    for value in sudoku:
+        if value not in range(1, 10):
+            present_rel_values = [] 
+            for rels in relatives: # rows, cols, quads
+                for relative_field in rels: # like each row in rows
+                    if ind in relative_field: # if the index is in the row
+                        for rel_ind in relative_field: # for each value in row
+                            present_rel_values.append(sudoku[rel_ind])
+            print(present_rel_values)
+            """
+
+                            if sudoku[rel_ind] not in range(1, 10): # if it is not filled
+                                if len(sudoku[rel_ind]) == 2:
+                                    print(ind, sudoku[rel_ind])
+                                    for r in sudoku[rel_ind]:
+                                        present_rel_values.add(r)
+                            else:
+                                print(sudoku[rel_ind])
+            
+                            if value != present_rel_values:
+                                unique_value = value.difference_update(present_rel_values)
+                                #print(ind, unique_value)
+                                made_changes = True
+            """
+        ind += 1
+    return sudoku, made_changes
 
 def is_valid(sudoku):
     """
@@ -287,9 +316,14 @@ def handle_user():
     elif to_solve.lower() == 'q':
         print("Goodbye!")
         quit()
-    made_changes = False
-    sudoku, made_changes = clear_filled(sudoku)
-    sudoku, made_changes = fill_last_value(sudoku)
+
+    made_changes = True
+    i=0
+    while made_changes and i<100:
+        sudoku, made_changes = clear_filled(sudoku)
+        sudoku, made_changes = fill_last_value(sudoku)
+        sudoku, made_changes = fill_unique_value(sudoku)
+        i += 1
 
     print(made_changes)
 
