@@ -59,7 +59,9 @@ def get_sudoku():
     # random/error in sudoku
     # input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
     # solvable
-    input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    # input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    # unique
+    input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
 
     if len(input_sudoku) == 81:
         print_sudoku(input_sudoku)
@@ -185,30 +187,28 @@ def fill_unique_value(sudoku):
     made_changes = False
     ind = 0
     for value in sudoku:
-        if value not in range(1, 10):
-            present_rel_values = [] 
+        print(f"ind: {ind}")
+        if type(value) is set:
             for rels in relatives: # rows, cols, quads
+                present_rel_values = {} # dictionary will be easier to iterate later
                 for relative_field in rels: # like each row in rows
                     if ind in relative_field: # if the index is in the row
                         for rel_ind in relative_field: # for each value in row
-                            present_rel_values.append(sudoku[rel_ind])
-            print(present_rel_values)
-            """
-
-                            if sudoku[rel_ind] not in range(1, 10): # if it is not filled
-                                if len(sudoku[rel_ind]) == 2:
-                                    print(ind, sudoku[rel_ind])
-                                    for r in sudoku[rel_ind]:
-                                        present_rel_values.add(r)
-                            else:
-                                print(sudoku[rel_ind])
+                            present_rel_values[str(rel_ind)] = sudoku[rel_ind]
+                present_rel_values_list = list(present_rel_values.values())
+                present_rel_keys_list = list(present_rel_values.keys())
             
-                            if value != present_rel_values:
-                                unique_value = value.difference_update(present_rel_values)
-                                #print(ind, unique_value)
-                                made_changes = True
-            """
+                #print(present_rel_values_list)
+                #print(list(present_rel_values.keys()))
+
+                i = 0
+                for rel_val in present_rel_values_list:
+                    if int(rel_val) in range(1, 10): # filled value
+                        pass
+                    i += 1
         ind += 1
+
+        sudoku, made_changes = fill_last_value(sudoku)
     return sudoku, made_changes
 
 def is_valid(sudoku):
@@ -261,7 +261,7 @@ def replace_cell(sudoku):
             
             input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
 
-        sudoku[cell_index] = input_new_cell_value
+        sudoku[cell_index] = int(input_new_cell_value)
         if str(old_value) == str(sudoku[cell_index]):
             print(f"You entered the same value: {old_value}")
             made_changes = False
