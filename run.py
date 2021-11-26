@@ -203,7 +203,7 @@ def fill_unique_value(sudoku):
 
                 i = 0
                 for rel_val in present_rel_values_list:
-                    if int(rel_val) in range(1, 10): # filled value
+                    if rel_val in range(1, 10): # filled value
                         pass
                     i += 1
         ind += 1
