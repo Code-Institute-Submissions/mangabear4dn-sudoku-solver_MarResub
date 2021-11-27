@@ -124,13 +124,18 @@ def get_sudoku():
     print("Numbers 1,2,3,4,5,6,7,8,9 are the filled values and any other symbols are missing values.")
     input_sudoku = input("Sudoku: \n")
 
-    # Later delete
+    if len(input_sudoku) < 1:
+        print("No sudoku received!")
+        print("Goodbye!")
+        quit()
+
+    # For testing
     # random/error in sudoku
     # input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
     # solvable
     # input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # unique
-    input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    # input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # solved
     # input_sudoku = "176239845485716932392845167759381624261574398834962571548623719923157486617498253"
     # not enough int
@@ -225,16 +230,12 @@ def clear_filled(sudoku):
     Gets list(81)
     Returns list(81)
     """
-    made_changes = False
     ind = 0
     for value in sudoku:
         if value in range(1, 10):
-            # print(value)
             for i in cell_relatives[ind]:
                 if sudoku[i] not in range(1, 10) and value in sudoku[i]:
                     sudoku[i].remove(value)
-                    # print(f"  {sudoku[i]}")
-                    made_changes = True
         ind += 1
     return sudoku
 
@@ -244,7 +245,6 @@ def fill_last_value(sudoku):
     Gets list(81)
     Returns list(81)
     """
-    made_changes = False
     ind = 0
     for cell in sudoku:
         if cell not in range(1, 10):
@@ -252,7 +252,6 @@ def fill_last_value(sudoku):
                 value = cell.copy().pop()
                 if is_valid(sudoku, ind, value):
                     sudoku[ind] = cell.pop()
-                made_changes = True
         ind += 1
 
     return sudoku
@@ -265,34 +264,26 @@ def fill_unique_value(sudoku):
     Gets list(81)
     Returns list(81)
     """
-    made_changes = False
     ind = 0
     for cell_group in cell_relatives:
-        # print(ind)
         if sudoku[ind] not in range(1, 10):
             for related_range in relatives:
                 # make a list of values possible in the range
                 values = []
                 for rel in related_range:
                     if ind in rel:
-                        # print(rel)
                         for cell in rel:
-                            # print(f"    {sudoku[cell]}")
                             if sudoku[cell] not in range(1, 10):
                                 for val in sudoku[cell]:
                                     values.append(val)
-                # print(f"  {values}")
                 # look for a unique value in the made list
                 unique_values = []
                 for val in values:
                     if values.count(val) == 1:
                         unique_values.append(val)
-                #print(f"unique values: {unique_values}")
                 # look for the location of unique value if any found and replace it
                 if len(unique_values) > 0:
-                    # if len(unique_values) == 1:
                     unique_value = unique_values[0]
-                    # print(f"one {unique_value} {type(unique_value)}")
                     valid_uniqueness = is_valid(sudoku, ind, unique_value)
                     if valid_uniqueness:
                         sudoku[ind] = unique_value
@@ -312,7 +303,8 @@ def is_valid(sudoku, ind, value):
             return False
     if ind < 10:
         print(f"\n0{ind} <- {value}")
-    print(f"\n{ind} <- {value}")
+    else:
+        print(f"\n{ind} <- {value}")
     print_sudoku(sudoku)
     return True
 
@@ -392,13 +384,6 @@ def replace_cell(sudoku):
 
     return sudoku
 
-def handle_unsolvable(sudoku):
-    """
-    Handle a sudoku the program cannot finish solving.
-    Gets list(81)
-    Returns None
-    """
-
 def handle_user():
     """
     Handle interactions with the user and call functions to solve the sudoku.
@@ -417,8 +402,6 @@ def handle_user():
     elif to_change_smth.lower() == 'q':
         print("Goodbye!")
         quit()
-
-    # to keep record of the input sudoku
     sudoku_at_the_start = sudoku
 
     print("Do you want this program to try to solve it?")
@@ -426,34 +409,33 @@ def handle_user():
     to_solve = input('Solve sudoku: ')
     if to_solve.lower() == 'n':
         print("Ok. Not solving sudoku!")
-        # hint the cell instead?
-        print("Goodbye!")
-        quit()
     elif to_solve.lower() == 'q':
         print("Goodbye!")
         quit()
-
-    """
-    Add time out to solving so it doesn't go on forever if unable to solve.
-    Reference:
-    https://stackoverflow.com/questions/13293269/how-would-i-stop-a-while-loop-after-n-amount-of-time
-    """
-    # 10 seconds to solve or break loop
-    timeout = time.time() + 10
-    while not is_solved(sudoku):
-        sudoku = clear_filled(sudoku)
-        sudoku = fill_last_value(sudoku)
-        sudoku = fill_unique_value(sudoku)
-        if time.time() > timeout:
-            break
+    else:
+        """
+        Add time out to solving so it doesn't go on forever if unable to solve.
+        Reference:
+        https://stackoverflow.com/questions/13293269/how-would-i-stop-a-while-loop-after-n-amount-of-time
+        """
+        print("Solving...")
+        # 10 seconds to solve or break loop
+        timeout = time.time() + 10
+        while not is_solved(sudoku):
+            sudoku = clear_filled(sudoku)
+            sudoku = fill_last_value(sudoku)
+            sudoku = fill_unique_value(sudoku)
+            if time.time() > timeout:
+                break
     
-    if not is_solved(sudoku):
+    if not is_solved(sudoku) or to_solve.lower() == 'n':
         print("Oh No! Sudoku solver couldn't solve this sudoku either! :(")
         print("Would you like a hint?")
 
         to_hint = input("Hint? (press 'y') : ")
         if to_hint.lower() == 'y':
             while to_hint.lower() == 'y':
+                sudoku = clear_filled(sudoku)
                 locations = make_locations_map()
                 input_cell_code = input('Please enter the XX code to the cell you want a hint for: ')
                 if input_cell_code in locations:
@@ -464,16 +446,16 @@ def handle_user():
                 
                 to_hint = input("Hint? (press 'y') : ")
         else:
-            print("OK. Better luck next time! Goodbye!")
-            quit()
+            print("OK. Better luck next time!")
         print("\n\nThis is the sudoku you entered: \n")
         print_sudoku(sudoku_at_the_start)
-        print("\nBetter luck next time! Goodbye!")
-        quit()
+        print("\nBetter luck next time!")
     else:
         print("\n\nFinal result: \n")
         print_sudoku(sudoku)
         print("\nExcellent!")
+        print("To see the order in which Sudoku Solver found the solution")
+        print(" - please, scroll back^^^")
 
     another = input("\nWould you like to solve another? (press 'y') : ")
     if another.lower() == 'y':
