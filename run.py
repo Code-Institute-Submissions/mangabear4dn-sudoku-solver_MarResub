@@ -385,17 +385,17 @@ def replace_cell(sudoku):
     locations = make_locations_map()
 
     """Replace value of location with input"""
-    input_cell_code = input('Please enter the XX code to the cell you want to change the value for: ')
+    input_cell_code = input('Please enter the XX code to the cell you want to change the value for: \n')
 
     if input_cell_code in locations:
         cell_index = locations.index(input_cell_code)
         old_value = sudoku[cell_index]
         print(f"Current {input_cell_code} value is: {old_value}")
-        input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
+        input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: \n')
         while len(input_new_cell_value) > 1:
             print("The value must be a number between 1 and 9 for filled cell or any one other character for unfilled cell!")
             print("Please try again!\n")
-            input_new_cell_value = input(f'Please enter the new value for the cell\n {input_cell_code}: ')
+            input_new_cell_value = input(f"Please enter the new value for the cell\n {input_cell_code}: \n")
 
         sudoku[cell_index] = int(input_new_cell_value)
         if str(old_value) == str(sudoku[cell_index]):
@@ -422,11 +422,11 @@ def handle_user():
 
     print("Do you want to make any changes to it?")
     print("\n\n(Yes) press 'y' !\n(No. Let's continue!) press any key besides 'y' and 'q' ! \n(Quit) press'q' !\n")
-    to_change_smth = input("Make changes: ")
+    to_change_smth = input("Make changes: \n")
     if to_change_smth.lower() == 'y':
         while to_change_smth.lower() == 'y':
             sudoku = replace_cell(sudoku)
-            to_change_smth = input("To make more changes press 'y': ")
+            to_change_smth = input("To make more changes press 'y': \n")
     elif to_change_smth.lower() == 'q':
         print("Goodbye!")
         quit()
@@ -434,7 +434,7 @@ def handle_user():
 
     print("Do you want this program to try to solve it?")
     print("\n(Yes) press any key besides 'n' and 'q' ! \n(No) press 'n' ! \n(Quit) press 'q' !")
-    to_solve = input('Solve sudoku: ')
+    to_solve = input('Solve sudoku: \n')
     if to_solve.lower() == 'n':
         print("Ok. Not solving sudoku!")
     elif to_solve.lower() == 'q':
@@ -459,18 +459,18 @@ def handle_user():
         print("Oh No! Sudoku solver couldn't solve this sudoku either! :(")
         print("Would you like a hint?")
 
-        to_hint = input("Hint? (press 'y') : ")
+        to_hint = input("Hint? (press 'y') : \n")
         if to_hint.lower() == 'y':
             while to_hint.lower() == 'y':
                 sudoku = clear_filled(sudoku)
                 locations = make_locations_map()
-                input_cell_code = input('Please enter the XX code to the cell you want a hint for: ')
+                input_cell_code = input('Please enter the XX code to the cell you want a hint for: \n')
                 if input_cell_code in locations:
                     cell_index = locations.index(input_cell_code)
                     print(f"{input_cell_code} : {sudoku[cell_index]}")
                 else:
                     print(f" {input_cell_code} is not on locations map!")
-                to_hint = input("Hint? (press 'y') : ")
+                to_hint = input("Hint? (press 'y') : \n")
         else:
             print("OK. Better luck next time!")
         print("\n\nThis is the sudoku you entered: \n")
@@ -483,7 +483,7 @@ def handle_user():
         print("To see the order in which Sudoku Solver found the solution")
         print(" - please, scroll back^^^")
 
-    another = input("\nWould you like to solve another? (press 'y') : ")
+    another = input("\nWould you like to solve another? (press 'y') : \n")
     if another.lower() == 'y':
         print("\nRestarting Sudoku Solver...")
         handle_user()
