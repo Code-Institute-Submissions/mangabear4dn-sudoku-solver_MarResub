@@ -128,14 +128,21 @@ def get_sudoku():
     # random/error in sudoku
     # input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
     # solvable
-    input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    # input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # unique
-    # input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # solved
     # input_sudoku = "176239845485716932392845167759381624261574398834962571548623719923157486617498253"
+    # not enough int
+    # input_sudoku = "1fegftrhhdddrghhhh3kkkhgdd7ggujhkyggtyhhhhh9rrrj9hj5ddlkkehtccjkkkkfjjjj6tlddd2w3"
 
     if len(input_sudoku) == 81:
-        print_sudoku(input_sudoku)
+        if is_input_valid(input_sudoku):
+            print_sudoku(input_sudoku)
+        else:
+            print("\n\nInput doesn't have enough filled in values!")
+            print("Try again...\n")
+            get_sudoku()
     else:
         print("\n\nInput is not a string of 81 charachters!")
         print("Try again...\n")
@@ -152,10 +159,21 @@ def get_sudoku():
 
 def is_input_valid(sudoku):
     """
-    Check if the input has enough filled values to try solving it
+    Check if the input has enough filled values to try solving it.
+    Enetered sudoku should have at least 17 filled cells.
+    Reference:
+    https://www.quora.com/What-is-the-minimum-number-of-numbers-needed-on-a-standard-9x9-Sudoku-for-it-to-still-be-solvable
     Gets list(81)
     Returns a boolean
     """
+    int_counter = 0
+    for cell in sudoku:
+        if cell in ('1', '2', '3', '4', '5', '6', '7', '8', '9'):
+            int_counter += 1
+    if int_counter > 16:
+        return True
+    else:
+        return False
 
 def display_unfilled_cell(cell_content):
     """
