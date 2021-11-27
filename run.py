@@ -396,8 +396,10 @@ def replace_cell(sudoku):
             print("The value must be a number between 1 and 9 for filled cell or any one other character for unfilled cell!")
             print("Please try again!\n")
             input_new_cell_value = input(f"Please enter the new value for the cell\n {input_cell_code}: \n")
-
-        sudoku[cell_index] = int(input_new_cell_value)
+        if input_new_cell_value not in ('1', '2', '3', '4', '5', '6', '7', '8', '9'):
+            input_new_cell_value = (1, 2, 3, 4, 5, 6, 7, 8, 9)
+        else:
+            sudoku[cell_index] = int(input_new_cell_value)
         if str(old_value) == str(sudoku[cell_index]):
             print(f"You entered the same value: {old_value}")
         else:
