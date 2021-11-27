@@ -125,11 +125,13 @@ def get_sudoku():
 
     # Later delete
     # random/error in sudoku
-    # input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
+    input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
     # solvable
-    input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    # input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # unique
     # input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    # solved
+    # input_sudoku = "176239845485716932392845167759381624261574398834962571548623719923157486617498253"
 
     if len(input_sudoku) == 81:
         print_sudoku(input_sudoku)
@@ -282,6 +284,7 @@ def fill_unique_value(sudoku):
 def is_valid(sudoku, ind, value):
     """
     Check if all values are unique in the same row, column and quadrant.
+    Only function that prints full sudoku while solving is in progress.
     Gets list(81), index of cell and 1-9 value to validate for this cell
     Returns a boolean
     """
@@ -302,6 +305,17 @@ def is_solved(sudoku):
     Gets list(81)
     Returns a boolean
     """
+    for cell in sudoku:
+        if cell not in range(1, 10):
+            return False
+    for cell_group in cell_relatives:
+        cell_set = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+        cell_filled_with = []
+        for cell in cell_group:
+            cell_filled_with.append(sudoku[cell])
+        if cell_set.sort() != cell_filled_with.sort():
+            return False
+    return True
 
 def replace_cell(sudoku):
     """
@@ -393,14 +407,25 @@ def handle_user():
         quit()
 
     i=0
-    while i<30:
+    while not is_solved(sudoku) or i == 81:
         sudoku = clear_filled(sudoku)
         sudoku = fill_last_value(sudoku)
         sudoku = fill_unique_value(sudoku)
         i += 1
+    
+    if not is_solved(sudoku) and i == 81:
+        print("Oh No! Sudoku solver couldn't solve this sudoku either! :(")
+        print("Would you like a hint?")
+        print("\n(No. I want to Quit.) press any key besides 'y' ! \n(Yes) press 'y' !")
 
-    #for 'unsolved after solving' sudoku ofer to make a change to cells again
+        to_hint = input('Hint sudoku cell: ')
+        if to_hint.lower() == 'y':
+            pass
+        else:
+            print("Better luck next time! Goodbye!")
+            quit()
 
+    print("\n\nFinal result: \n")
     print_sudoku(sudoku)
 
 handle_user()
