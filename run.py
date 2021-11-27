@@ -183,26 +183,16 @@ def clear_filled(sudoku):
     Gets list(81)
     Returns list(81) and a boolean made_changes
     """
-
     made_changes = False
     ind = 0
     for value in sudoku:
-        if value not in range(1, 10):
-            
-            filled_values = {sudoku[rel_ind] for rels in relatives for relative_field in rels if ind in relative_field for rel_ind in relative_field if sudoku[rel_ind] in range(1, 10)}
-            """
-            filled_values = set()
-            for rels in relatives: # rows, cols, quads
-                for relative_field in rels: # like each row in rows
-                    if ind in relative_field: # if the index is in the row
-                        for rel_ind in relative_field: # for each value in row
-                            if sudoku[rel_ind] in range(1, 10): # if it is filled
-                                filled_values.add(sudoku[rel_ind])
-            """
-            if value != filled_values:
-                value.difference_update(filled_values)
-                # print(ind, value)
-                made_changes = True
+        if value in range(1, 10):
+            # print(value)
+            for i in cell_relatives[ind]:
+                if sudoku[i] not in range(1, 10) and value in sudoku[i]:
+                    sudoku[i].remove(value)
+                    # print(f"  {sudoku[i]}")
+                    made_changes = True
         ind += 1
     return sudoku, made_changes
 
@@ -232,6 +222,7 @@ def fill_unique_value(sudoku):
     Returns list(81) and a boolean made_changes
     """
     made_changes = False
+    return sudoku, made_changes
     ind = 0
     for value in sudoku:
         print(f"ind: {ind}")
