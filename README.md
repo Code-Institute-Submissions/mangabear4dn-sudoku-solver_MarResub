@@ -83,6 +83,8 @@ If entered 'y' to change a cell value:
 
  - CORRECT response to the situation
 
+* when testing on deployed version on Heroku a bug that doesn't appear in console appeared. When changing the values of seperate cells is done - The matrix loses a couple of fields and and the matrix is displayed wrong.
+
 ### Offers to solve sudoku
 ![Offers to solve](assets/images/to_solve.png)
 
@@ -120,39 +122,21 @@ If the sudoku solver could reach a solved sudoku:
 
 ## Deployment
 
-Welcome mangabear4dn,
-
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **August 17, 2021**
-
-## Reminders
-
-* Your code must be placed in the `run.py` file
-* Your dependencies must be placed in the `requirements.txt` file
-* Do not edit any of the other files or your code may not deploy properly
-
-## Creating the Heroku app
-
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
-
-1. `heroku/python`
-2. `heroku/nodejs`
-
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
-
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
-
-Connect your GitHub repository and deploy as normal.
-
-## Constraints
-
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
-
------
-Happy coding!
+The program was deployed using Heroku after being developed in GitHub using GitPod development enviroment.
+I was making commits to GitHub to document the progres of the development and later I followed the 2 video instuctions when deploying on Heroku.
+I started by creating a profile on Heroku platform and the created the app for this program.
+In the settings section for my app (on Heroku) I added two buildpacks (`heroku/python`, `heroku/nodejs`) and created a configurations variable called `PORT`. Set this to `8000`.
+And the I manually deployed the program.
+I found at least one bug in the deployed version that I haven't fixed yet (when replacing a value of a sudoku cell the matrix loses it's shape. But I couldn't find the reason for it and it does not appear in the console version of the program in GitPod) 
 
 ## Credits
+
 * w3schools information on data types and methods
 * Mentor suggestions
 * CI lessons
 * stackoverflow for more concrete solutions (references in the code)
 * other materials on the processes (reference in the code)
+
+## Conclusion 
+I generally like solving sudoku puzzles and I can do it in quick leisurely pace without a problem. So I chose this as my project idea.
+But during the development of the program it became clear that the coding solution isn't as simple as I thought. I lost a lot of time trying to make the initially very complicated logic work right and had to redo entire sections of the code because I hit a 'swamp' of if statemnets and for loops so deep I couln't make sense of it anymore. I retrospect I should have probably chosen a simpler thing to code. Bu in general I am happy with the result. Putting aside a lot of 'what if this gets entered there' The program can solve a sudoku.
