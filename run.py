@@ -2,6 +2,27 @@
 This is module of sudoku solver.
 """
 """
+For a sudoku 9x9 each filled value must be unique in it's row, column and quadrant to be correct.
+To make checking uniqueness easier the following 3 tuples of indeces in the same row, column and quadrant 
+will be used in iterations.
+"""
+rows = ((0, 1, 2, 3, 4, 5, 6, 7, 8), (9, 10, 11, 12, 13, 14, 15, 16, 17), 
+        (18, 19, 20, 21, 22, 23, 24, 25, 26), (27, 28, 29, 30, 31, 32, 33, 34, 35), 
+        (36, 37, 38, 39, 40, 41, 42, 43, 44), (45, 46, 47, 48, 49, 50, 51, 52, 53), 
+        (54, 55, 56, 57, 58, 59, 60, 61, 62), (63, 64, 65, 66, 67, 68, 69, 70, 71), 
+        (72, 73, 74, 75, 76, 77, 78, 79, 80))
+cols = ((0, 9, 18, 27, 36, 45, 54, 63, 72), (1, 10, 19, 28, 37, 46, 55, 64, 73), 
+        (2, 11, 20, 29, 38, 47, 56, 65, 74), (3, 12, 21, 30, 39, 48, 57, 66, 75), 
+        (4, 13, 22, 31, 40, 49, 58, 67, 76), (5, 14, 23, 32, 41, 50, 59, 68, 77), 
+        (6, 15, 24, 33, 42, 51, 60, 69, 78), (7, 16, 25, 34, 43, 52, 61, 70, 79), 
+        (8, 17, 26, 35, 44, 53, 62, 71, 80))
+quads = ((0, 1, 2, 9, 10, 11, 18, 19, 20), (3, 4, 5, 12, 13, 14, 21, 22, 23), 
+         (6, 7, 8, 15, 16, 17, 24, 25, 26), (27, 28, 29, 36, 37, 38, 45, 46, 47), 
+         (30, 31, 32, 39, 40, 41, 48, 49, 50), (33, 34, 35, 42, 43, 44, 51, 52, 53), 
+         (54, 55, 56, 63, 64, 65, 72, 73, 74), (57, 58, 59, 66, 67, 68, 75, 76, 77), 
+         (60, 61, 62, 69, 70, 71, 78, 79, 80))
+relatives = (rows, cols, quads)
+"""
 The index of each cell_relative is the same as the index in the sudoku so indeces can be used for both at the same time when iterating.
 Coding was used to help generate the cell_relatives and then the cell index itself was removed manually from each line.
 """
@@ -222,31 +243,51 @@ def fill_unique_value(sudoku):
     Returns list(81) and a boolean made_changes
     """
     made_changes = False
-    return sudoku, made_changes
     ind = 0
-    for value in sudoku:
-        print(f"ind: {ind}")
-        if type(value) is set:
-            for rels in relatives: # rows, cols, quads
-                present_rel_values = {} # dictionary will be easier to iterate later
-                for relative_field in rels: # like each row in rows
-                    if ind in relative_field: # if the index is in the row
-                        for rel_ind in relative_field: # for each value in row
-                            present_rel_values[str(rel_ind)] = sudoku[rel_ind]
-                present_rel_values_list = list(present_rel_values.values())
-                present_rel_keys_list = list(present_rel_values.keys())
-            
-                #print(present_rel_values_list)
-                #print(list(present_rel_values.keys()))
-
-                i = 0
-                for rel_val in present_rel_values_list:
-                    if rel_val in range(1, 10): # filled value
-                        pass
-                    i += 1
+    for cell_group in cell_relatives:
+        print(ind)
+        if sudoku[ind] not in range(1, 10):
+            for related_range in relatives:
+                # make a list of values possible in the range
+                values = []
+                for rel in related_range:
+                    if ind in rel:
+                        print(rel)
+                        for cell in rel:
+                            print(f"    {sudoku[cell]}")
+                            if sudoku[cell] not in range(1, 10):
+                                for val in sudoku[cell]:
+                                    values.append(val)
+                print(f"  {values}")
+                # look for a unique value in the made list
+                unique_values = []
+                for val in values:
+                    if values.count(val) == 1:
+                        unique_values.append(val)
+                print(f"unique values: {unique_values}")
+                # look for the location of unique value if any found and replace it
+                if unique_values:
+                    for unique_val in unique_values:
+                        for rel in related_range:
+                            if ind in rel:
+                                for cell in rel:
+                                    if sudoku[cell] in range(1, 10):
+                                        print("int")
+                                        if sudoku[cell] == unique_val:
+                                            print("dublicate unfiltered")
+                                    else:
+                                        print("set")
+                                        for val in sudoku[cell]:
+                                            print("in cell")
+                                            if val == unique_val:
+                                                print("val unique")
+                                                validate_fill = True
+                                                if validate_fill:
+                                                    print(f".     {cell} unique in {sudoku[cell]} {type(sudoku[cell])} : {val} {type(val)}")
+                                                    sudoku[cell] = int(val)
+                                                    made_changes = True
+                                         
         ind += 1
-
-        sudoku, made_changes = fill_last_value(sudoku)
     return sudoku, made_changes
 
 def is_valid(sudoku):
@@ -357,10 +398,12 @@ def handle_user():
 
     made_changes = True
     i=0
-    while made_changes and i<100:
+    while i<3:
         sudoku, made_changes = clear_filled(sudoku)
         sudoku, made_changes = fill_last_value(sudoku)
         sudoku, made_changes = fill_unique_value(sudoku)
+
+        print_sudoku(sudoku)
         i += 1
 
     print(made_changes)
