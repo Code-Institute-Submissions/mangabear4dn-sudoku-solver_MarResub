@@ -1,6 +1,7 @@
 """
 This is module of sudoku solver.
 """
+import time
 """
 For a sudoku 9x9 each filled value must be unique in it's row, column and quadrant to be correct.
 To make checking uniqueness easier the following 3 tuples of indeces in the same row, column and quadrant 
@@ -125,9 +126,9 @@ def get_sudoku():
 
     # Later delete
     # random/error in sudoku
-    input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
+    # input_sudoku = "ieb3k7s5h40a3n5f2l7g5m7e4n96f5ieb3k7s5h40a3n5f2l7g5m7e4n96f5heu635972b6492hdtvep5"
     # solvable
-    # input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
+    input_sudoku = "1f6gft8h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # unique
     # input_sudoku = "1263498h5dddr1hhhh3kk8h5dd7gg93h16ggt6hhhhh9rrr49h25dd5kk6h3cc9kkkk5jjjj6t7ddd2w3"
     # solved
@@ -317,14 +318,11 @@ def is_solved(sudoku):
             return False
     return True
 
-def replace_cell(sudoku):
+def make_locations_map():
     """
-    Replace the content of one cell.
-    Gets list(81)
-    Returns list(81)
+    Create a visual map to use when asking user about a specific cell
+    Return list with locations names
     """
-
-    """Create locations map"""
     locations = []
     for ind in range(81):
         if ind < 10:
@@ -334,6 +332,17 @@ def replace_cell(sudoku):
 
     print("This is the code (XX) map for the sudoku: \n")
     print_sudoku(locations)
+    return locations
+
+def replace_cell(sudoku):
+    """
+    Replace the content of one cell.
+    Gets list(81)
+    Returns list(81)
+    """
+
+    """Create locations map"""
+    locations = make_locations_map()
 
     """Replace value of location with input"""
     made_changes = True
@@ -376,7 +385,7 @@ def handle_user():
     """
     Handle interactions with the user and call functions to solve the sudoku.
     """
-    print("Hello friend!")
+    print("\n\n\nHello friend!")
     print("This is your Sudoku Solver!")
     sudoku = get_sudoku()
 
@@ -406,26 +415,54 @@ def handle_user():
         print("Goodbye!")
         quit()
 
-    i=0
-    while not is_solved(sudoku) or i == 81:
+    """
+    Add time out to solving so it doesn't go on forever if unable to solve.
+    Reference:
+    https://stackoverflow.com/questions/13293269/how-would-i-stop-a-while-loop-after-n-amount-of-time
+    """
+    # 10 seconds to solve or break loop
+    timeout = time.time() + 10
+    while not is_solved(sudoku):
         sudoku = clear_filled(sudoku)
         sudoku = fill_last_value(sudoku)
         sudoku = fill_unique_value(sudoku)
-        i += 1
+        if time.time() > timeout:
+            break
     
-    if not is_solved(sudoku) and i == 81:
+    if not is_solved(sudoku):
         print("Oh No! Sudoku solver couldn't solve this sudoku either! :(")
         print("Would you like a hint?")
-        print("\n(No. I want to Quit.) press any key besides 'y' ! \n(Yes) press 'y' !")
 
-        to_hint = input('Hint sudoku cell: ')
+        to_hint = input("Hint? (press 'y') : ")
         if to_hint.lower() == 'y':
-            pass
+            while to_hint.lower() == 'y':
+                locations = make_locations_map()
+                input_cell_code = input('Please enter the XX code to the cell you want a hint for: ')
+                if input_cell_code in locations:
+                    cell_index = locations.index(input_cell_code)
+                    print(f"{input_cell_code} : {sudoku[cell_index]}")
+                else:
+                    print(f" {input_cell_code} is not on locations map!")
+                
+                to_hint = input("Hint? (press 'y') : ")
         else:
-            print("Better luck next time! Goodbye!")
+            print("OK. Better luck next time! Goodbye!")
             quit()
+        print("\n\nThis is the sudoku you entered: \n")
+        print_sudoku(sudoku_at_the_start)
+        print("\nBetter luck next time! Goodbye!")
+        quit()
+    else:
+        print("\n\nFinal result: \n")
+        print_sudoku(sudoku)
+        print("\nExcellent!")
 
-    print("\n\nFinal result: \n")
-    print_sudoku(sudoku)
+    another = input("\nWould you like to solve another? (press 'y') : ")
+    if another.lower() == 'y':
+        print("\nRestarting Sudoku Solver...")
+        handle_user()
+    else:
+        print("Goodbye!")
+        quit()
 
 handle_user()
