@@ -202,7 +202,7 @@ def clear_filled(sudoku):
     Clear already filled values from related sets for missing values.
     If the value is in the same row, column of quadrant it gets popped from the set.
     Gets list(81)
-    Returns list(81) and a boolean made_changes
+    Returns list(81)
     """
     made_changes = False
     ind = 0
@@ -215,24 +215,26 @@ def clear_filled(sudoku):
                     # print(f"  {sudoku[i]}")
                     made_changes = True
         ind += 1
-    return sudoku, made_changes
+    return sudoku
 
 def fill_last_value(sudoku):
     """
     Replace any missing sudoku value with the last remaining value in it's set if the set has only one value left in it.
     Gets list(81)
-    Returns list(81) and a boolean made_changes
+    Returns list(81)
     """
     made_changes = False
     ind = 0
     for cell in sudoku:
         if cell not in range(1, 10):
             if len(cell) == 1:
-                sudoku[ind] = cell.pop()
+                value = cell.copy().pop()
+                if is_valid(sudoku, ind, value):
+                    sudoku[ind] = cell.pop()
                 made_changes = True
         ind += 1
 
-    return sudoku, made_changes
+    return sudoku
 
 def fill_unique_value(sudoku):
     """
@@ -240,62 +242,57 @@ def fill_unique_value(sudoku):
       if that value doesn't repeat in any of the sets of missing values related to it (same row, column, quadrant)
       after all the filled values are cleared (clear_filled).
     Gets list(81)
-    Returns list(81) and a boolean made_changes
+    Returns list(81)
     """
     made_changes = False
     ind = 0
     for cell_group in cell_relatives:
-        print(ind)
+        # print(ind)
         if sudoku[ind] not in range(1, 10):
             for related_range in relatives:
                 # make a list of values possible in the range
                 values = []
                 for rel in related_range:
                     if ind in rel:
-                        print(rel)
+                        # print(rel)
                         for cell in rel:
-                            print(f"    {sudoku[cell]}")
+                            # print(f"    {sudoku[cell]}")
                             if sudoku[cell] not in range(1, 10):
                                 for val in sudoku[cell]:
                                     values.append(val)
-                print(f"  {values}")
+                # print(f"  {values}")
                 # look for a unique value in the made list
                 unique_values = []
                 for val in values:
                     if values.count(val) == 1:
                         unique_values.append(val)
-                print(f"unique values: {unique_values}")
+                #print(f"unique values: {unique_values}")
                 # look for the location of unique value if any found and replace it
-                if unique_values:
-                    for unique_val in unique_values:
-                        for rel in related_range:
-                            if ind in rel:
-                                for cell in rel:
-                                    if sudoku[cell] in range(1, 10):
-                                        print("int")
-                                        if sudoku[cell] == unique_val:
-                                            print("dublicate unfiltered")
-                                    else:
-                                        print("set")
-                                        for val in sudoku[cell]:
-                                            print("in cell")
-                                            if val == unique_val:
-                                                print("val unique")
-                                                validate_fill = True
-                                                if validate_fill:
-                                                    print(f".     {cell} unique in {sudoku[cell]} {type(sudoku[cell])} : {val} {type(val)}")
-                                                    sudoku[cell] = int(val)
-                                                    made_changes = True
-                                         
+                if len(unique_values) > 0:
+                    # if len(unique_values) == 1:
+                    unique_value = unique_values[0]
+                    # print(f"one {unique_value} {type(unique_value)}")
+                    valid_uniqueness = is_valid(sudoku, ind, unique_value)
+                    if valid_uniqueness:
+                        sudoku[ind] = unique_value
+                        return sudoku
         ind += 1
-    return sudoku, made_changes
+    return sudoku
 
-def is_valid(sudoku):
+def is_valid(sudoku, ind, value):
     """
     Check if all values are unique in the same row, column and quadrant.
-    Gets list(81)
+    Gets list(81), index of cell and 1-9 value to validate for this cell
     Returns a boolean
     """
+    for cell in cell_relatives[ind]:
+        if sudoku[cell] == value:
+            return False
+    if ind < 10:
+        print(f"\n0{ind} <- {value}")
+    print(f"\n{ind} <- {value}")
+    print_sudoku(sudoku)
+    return True
 
 def is_solved(sudoku):
     """
@@ -310,7 +307,7 @@ def replace_cell(sudoku):
     """
     Replace the content of one cell.
     Gets list(81)
-    Returns list(81) and a boolean made_changes
+    Returns list(81)
     """
 
     """Create locations map"""
@@ -343,7 +340,6 @@ def replace_cell(sudoku):
         sudoku[cell_index] = int(input_new_cell_value)
         if str(old_value) == str(sudoku[cell_index]):
             print(f"You entered the same value: {old_value}")
-            made_changes = False
         else: 
             print(f'{old_value} -> {sudoku[cell_index]}')
 
@@ -353,7 +349,7 @@ def replace_cell(sudoku):
     else:
         replace_cell(sudoku)
 
-    return [sudoku, made_changes]
+    return sudoku
 
 def handle_unsolvable(sudoku):
     """
@@ -396,17 +392,12 @@ def handle_user():
         print("Goodbye!")
         quit()
 
-    made_changes = True
     i=0
-    while i<3:
-        sudoku, made_changes = clear_filled(sudoku)
-        sudoku, made_changes = fill_last_value(sudoku)
-        sudoku, made_changes = fill_unique_value(sudoku)
-
-        print_sudoku(sudoku)
+    while i<30:
+        sudoku = clear_filled(sudoku)
+        sudoku = fill_last_value(sudoku)
+        sudoku = fill_unique_value(sudoku)
         i += 1
-
-    print(made_changes)
 
     #for 'unsolved after solving' sudoku ofer to make a change to cells again
 
