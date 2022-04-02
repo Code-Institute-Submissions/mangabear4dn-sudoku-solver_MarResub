@@ -135,19 +135,23 @@ The issues that needed solving for resubmission were that:
 * code does not comply with PEP8 conventions
 
 ### PEP8
-* cell_relatives tuple
+[Reference](https://peps.python.org/pep-0008/)
+
+[Tested in](http://pep8online.com)
+
+* cell_relatives tuple: 
 The issue was solved by moving the last value in the inner tuples to the next row but leaving the rest of the tuple unchanged so it doesn't lose it's clear structure on sight.
 
-* if statement
+* if statement: 
 The condition was put in parenthesis and split in two rows.
 
-* comments
+* comments: 
 Some lines in comments needed to be split in tWo rows.
 
-* string values too long for one line
-Reference: https://stackoverflow.com/questions/1874592/how-to-write-very-long-string-that-conforms-with-pep8-and-prevent-e501
+* string values too long for one line: 
+[Reference](https://stackoverflow.com/questions/1874592/how-to-write-very-long-string-that-conforms-with-pep8-and-prevent-e501)
 
-* warnings about strings that have no effect
+* warnings about strings that have no effect: 
 The strings are comments on the following code pieces so they were not changed since they are supposed to be only informative to the person looking at the code.
 
 
