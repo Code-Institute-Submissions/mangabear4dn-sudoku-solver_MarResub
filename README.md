@@ -129,6 +129,29 @@ In the settings section for my app (on Heroku) I added two buildpacks (`heroku/p
 And the I manually deployed the program.
 I found at least one bug in the deployed version that I haven't fixed yet (when replacing a value of a sudoku cell the matrix loses it's shape. But I couldn't find the reason for it and it does not appear in the console version of the program in GitPod) 
 
+## Edits for resubmission 
+
+The issues that needed solving for resubmission were that:
+* code does not comply with PEP8 conventions
+
+### PEP8
+* cell_relatives tuple
+The issue was solved by moving the last value in the inner tuples to the next row but leaving the rest of the tuple unchanged so it doesn't lose it's clear structure on sight.
+
+* if statement
+The condition was put in parenthesis and split in two rows.
+
+* comments
+Some lines in comments needed to be split in tWo rows.
+
+* string values too long for one line
+Reference: https://stackoverflow.com/questions/1874592/how-to-write-very-long-string-that-conforms-with-pep8-and-prevent-e501
+
+* warnings about strings that have no effect
+The strings are comments on the following code pieces so they were not changed since they are supposed to be only informative to the person looking at the code.
+
+
+
 ## Credits
 
 * w3schools information on data types and methods
